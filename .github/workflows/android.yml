@@ -4,20 +4,25 @@ on:
   push:
     branches:
       - 'dev'
+
 jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
-steps:
+    steps:  # ✅ Make sure "steps" is present
       - name: Check out Git repository
         uses: actions/checkout@v2
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
+
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
+
       - name: Build Android Release
         run: |
           cd android && ./gradlew clean && ./gradlew app:assembleRelease
+
       - name: Sign APK
         id: sign_app
         uses: r0adkll/sign-android-release@v1
@@ -27,6 +32,7 @@ steps:
           alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
       - name: Upload APK
         id: uploadArtifact
         uses: actions/upload-artifact@v2

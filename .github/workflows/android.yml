@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:  # ✅ Make sure "steps" is present
       - name: Check out Git repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
@@ -35,7 +35,7 @@ jobs:
 
       - name: Upload APK
         id: uploadArtifact
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@v3
         with:
           name: app
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}

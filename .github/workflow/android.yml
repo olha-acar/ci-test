@@ -22,7 +22,7 @@ steps:
         id: sign_app
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: ${{ github.workspace}}/app-name/android/app/build/outputs/apk/release
+          releaseDirectory: ${{ github.workspace }}/android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
           alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
@@ -32,4 +32,4 @@ steps:
         uses: actions/upload-artifact@v2
         with:
           name: app
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          path: ${{ steps.sign_app.outputs.signedReleaseFile }}

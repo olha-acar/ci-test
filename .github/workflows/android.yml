@@ -1,15 +1,8 @@
-name: Android Build
-
-on:
-  push:
-    branches:
-      - 'dev'
-
 jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
-    steps:  # ✅ Make sure "steps" is present
+    steps:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
@@ -35,7 +28,47 @@ jobs:
 
       - name: Upload APK
         id: uploadArtifact
-        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
+        uses: actions/upload-artifact@v3
         with:
           name: app
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+
+  deploy-apk:
+    name: Deploy APK to GitHub Releases
+    runs-on: ubuntu-latest
+    needs: android-build
+    steps:
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app
+          path: .
+
+      - name: Upload to GitHub Releases
+        uses: softprops/action-gh-release@v1
+        with:
+          files: app-release.apk
+          tag_name: v1.0.${{ github.run_number }}
+          body: "New Android release build"
+          draft: false
+          prerelease: false
+
+  deploy-playstore:
+    name: Deploy APK to Google Play Store
+    runs-on: ubuntu-latest
+    needs: deploy-apk
+    steps:
+      - name: Download APK Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: app
+          path: .
+
+      - name: Upload to Google Play
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJson: ${{ secrets.PLAY_STORE_SERVICE_ACCOUNT }}
+          packageName: "com.yourapp.package"
+          releaseFiles: app-release.apk
+          track: production
+          status: completed

@@ -9,6 +9,7 @@ jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
+    if: false
     steps:  # ✅ Make sure "steps" is present
       - name: Check out Git repository
         uses: actions/checkout@v3

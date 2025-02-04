@@ -1,0 +1,38 @@
+name: iOS Build
+
+on:
+  push:
+    branches:
+      - dev  # Trigger on push to the main branch
+
+jobs:
+  ios-build:
+    name: iOS Build
+    runs-on: macos-latest
+    steps:
+      - name: Check out Git repository
+        uses: actions/checkout@v3
+
+      - name: Set up Xcode
+        uses: actions/setup-xcode@v3
+        with:
+          xcode-version: '13.2'  # Specify the version of Xcode to use
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
+
+      - name: Build iOS App
+        run: |
+          cd ios && xcodebuild clean -workspace YourApp.xcworkspace -scheme YourApp -configuration Release -sdk iphoneos
+
+      - name: Export IPA
+        run: |
+          xcodebuild -exportArchive -archivePath ${{ github.workspace }}/ios/build/YourApp.xcarchive -exportPath ${{ github.workspace }}/ios/build/ -exportOptionsPlist ./ExportOptions.plist
+
+      - name: Upload IPA to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
+          token: ${{ secrets.FIREBASE_AUTH_TOKEN }}
+          file: ios/build/YourApp.ipa
+          groups: "ios"

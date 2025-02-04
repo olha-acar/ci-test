@@ -69,7 +69,12 @@ jobs:
       - name: Build the iOS app
         run: |
           cd ios
-          xcodebuild -workspace ci_test.xcworkspace -scheme ci_test -configuration Release -sdk iphoneos -archivePath build/ci_test.xcarchive archive
+          xcodebuild -workspace YourApp.xcworkspace \
+            -scheme ci_test \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/ci_test.xcarchive \
+            -allowProvisioningUpdates archive
 
       - name: Export the IPA file
         run: |

@@ -22,18 +22,32 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
 
-      - name: Build iOS App
+# Step 1: Build iOS app
+      - name: Build iOS app
         run: |
-          cd ios && xcodebuild clean -workspace ci_test.xcworkspace -scheme ci_test -configuration Release -sdk iphoneos
+          cd ios && pod install
+          xcodebuild -workspace ios/ci_test.xcworkspace \
+            -scheme ci_test \
+            -configuration Release \
+            -sdk iphoneos
 
+# Step 2: Archive iOS app (create .xcarchive file)
+      - name: Archive iOS app
+        run: |
+          xcodebuild -workspace ios/ci_test.xcworkspace \
+            -scheme ci_test \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive archive
+
+      # Step 3: Export IPA
       - name: Export IPA
         run: |
-          ls -l ${{ github.workspace }}/ios/ExportOptions.plist  # Verify the file exists
           xcodebuild -exportArchive \
             -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive \
             -exportPath ${{ github.workspace }}/ios/build/ \
             -exportOptionsPlist ${{ github.workspace }}/ios/ExportOptions.plist
-            
+                  
       - name: Upload IPA to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:

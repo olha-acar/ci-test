@@ -27,21 +27,16 @@ jobs:
           cd ios
           pod install --repo-update
 
-      - name: Build iOS app
+     - name: Build the iOS app
         run: |
-          xcodebuild -workspace ios/ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration Debug \
-            -sdk iphoneos
+          cd ios
+          xcodebuild -workspace ci_test.xcworkspace -scheme ci_test -configuration Release -sdk iphoneos -archivePath build/ci_test.xcarchive archive
 
-      - name: Archive iOS app
+      - name: Export the IPA file
         run: |
-          xcodebuild -workspace ios/ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration Debug \
-            -sdk iphoneos \
-            -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive archive
+          xcodebuild -exportArchive -archivePath ios/build/ci_test.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath ios/build
 
+      # Step 3: Export IPA
       - name: Export IPA
         run: |
           xcodebuild -exportArchive \

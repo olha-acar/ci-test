@@ -15,9 +15,9 @@ jobs:
       
       - name: Set up JDK
         uses: actions/setup-java@v3
-          with:
-            distribution: 'temurin'
-            java-version: '17'
+        with:
+        distribution: 'temurin'
+        java-version: '17'
 
       - name: Install Android SDK Build Tools
         run: |
@@ -25,7 +25,7 @@ jobs:
           sudo chmod -R 777 /usr/local/lib/android/sdk
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-29" "build-tools;29.0.3"
-          
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
 

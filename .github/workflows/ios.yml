@@ -69,7 +69,7 @@ jobs:
       - name: Build the iOS app
         run: |
           cd ios
-          xcodebuild -workspace YourApp.xcworkspace \
+          xcodebuild -workspace ci_test.xcworkspace \
             -scheme ci_test \
             -configuration Release \
             -sdk iphoneos \

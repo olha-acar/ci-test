@@ -24,16 +24,16 @@ jobs:
 
       - name: Build iOS App
         run: |
-          cd ios && xcodebuild clean -workspace YourApp.xcworkspace -scheme YourApp -configuration Release -sdk iphoneos
+          cd ios && xcodebuild clean -workspace ci_test.xcworkspace -scheme ci_test -configuration Release -sdk iphoneos
 
       - name: Export IPA
         run: |
-          xcodebuild -exportArchive -archivePath ${{ github.workspace }}/ios/build/YourApp.xcarchive -exportPath ${{ github.workspace }}/ios/build/ -exportOptionsPlist ./ExportOptions.plist
+          xcodebuild -exportArchive -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive -exportPath ${{ github.workspace }}/ios/build/ -exportOptionsPlist ./ExportOptions.plist
 
       - name: Upload IPA to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
           token: ${{ secrets.FIREBASE_AUTH_TOKEN }}
-          file: ios/build/YourApp.ipa
+          file: ios/build/ci_test.ipa
           groups: "ios"

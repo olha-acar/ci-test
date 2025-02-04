@@ -67,8 +67,4 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID }}  # Firebase App ID
           token: ${{ secrets.FIREBASE_AUTH_TOKEN }}  # Firebase Auth Token
           file: android/app/build/outputs/apk/release/app-release.apk
-<<<<<<< HEAD
           groups: "internal"  
-=======
-          groups: "Testers"  # Firebase groups you want to share with
->>>>>>> fb-setup

@@ -46,11 +46,11 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profile
       
-      - name: Clean up keychain and provisioning profile
-        if: ${{ always() }}
-        run: |
-          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
-          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
+      # - name: Clean up keychain and provisioning profile
+      #   if: ${{ always() }}
+      #   run: |
+      #     security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+      #     rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
 
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1

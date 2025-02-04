@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "441527565603",
+    "project_id": "ci-learning-801ef",
+    "storage_bucket": "ci-learning-801ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:441527565603:android:19882064ca7f6866e0e096",
+        "android_client_info": {
+          "package_name": "com.ci_test"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxZ-B7TcvTeHaV2-AXGlhh3u-hGezSe-M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

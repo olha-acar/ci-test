@@ -28,8 +28,12 @@ jobs:
 
       - name: Export IPA
         run: |
-          xcodebuild -exportArchive -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive -exportPath ${{ github.workspace }}/ios/build/ -exportOptionsPlist ./ExportOptions.plist
-
+          ls -l ${{ github.workspace }}/ios/ExportOptions.plist  # Verify the file exists
+          xcodebuild -exportArchive \
+            -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive \
+            -exportPath ${{ github.workspace }}/ios/build/ \
+            -exportOptionsPlist ${{ github.workspace }}/ios/ExportOptions.plist
+            
       - name: Upload IPA to Firebase
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:

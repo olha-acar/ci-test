@@ -9,10 +9,23 @@ jobs:
   android-build:
     name: Android Build
     runs-on: ubuntu-latest
-    steps:
+    steps:  # ✅ Make sure "steps" is present
       - name: Check out Git repository
         uses: actions/checkout@v3
+      
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+          with:
+            distribution: 'temurin'
+            java-version: '17'
 
+      - name: Install Android SDK Build Tools
+        run: |
+          sudo mkdir -p /usr/local/lib/android/sdk
+          sudo chmod -R 777 /usr/local/lib/android/sdk
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-29" "build-tools;29.0.3"
+          
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
 
@@ -35,29 +48,7 @@ jobs:
 
       - name: Upload APK
         id: uploadArtifact
-        uses: actions/upload-artifact@v3
+        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
         with:
           name: app
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}
-
-  deploy-apk:
-    name: Deploy APK to GitHub Releases
-    runs-on: ubuntu-latest
-    needs: android-build
-    steps:
-      - name: Download APK Artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: app
-          path: .
-
-      - name: Upload to GitHub Releases
-        uses: softprops/action-gh-release@v1
-        with:
-          files: app-release.apk
-          tag_name: v1.0.${{ github.run_number }}
-          body: "New Android release build"
-          draft: false
-          prerelease: false
-
- 

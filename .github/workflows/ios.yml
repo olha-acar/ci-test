@@ -15,7 +15,7 @@ jobs:
       
       - name: Checkout repository
         uses: actions/checkout@v4
-        
+
       - name: Install the Apple certificate and provisioning profile
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
@@ -44,43 +44,49 @@ jobs:
 
           # apply provisioning profile
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profile
+      
+      - name: Clean up keychain and provisioning profile
+        if: ${{ always() }}
+        run: |
+          security delete-keychain $RUNNER_TEMP/app-signing.keychain-db
+          rm ~/Library/MobileDevice/Provisioning\ Profiles/build_pp.mobileprovision
 
-    #   - name: Set up Xcode
-    #     uses: maxim-lobanov/setup-xcode@v1
-    #     with:
-    #       xcode-version: latest-stable
+      - name: Set up Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
 
-    #   - name: Install dependencies
-    #     run: yarn install --frozen-lockfile --network-timeout 300000
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
 
-    #   - name: Install CocoaPods dependencies
-    #     run: |
-    #       cd ios
-    #       pod install --repo-update
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install --repo-update
 
-    #  - name: Build the iOS app
-    #     run: |
-    #       cd ios
-    #       xcodebuild -workspace ci_test.xcworkspace -scheme ci_test -configuration Release -sdk iphoneos -archivePath build/ci_test.xcarchive archive
+     - name: Build the iOS app
+        run: |
+          cd ios
+          xcodebuild -workspace ci_test.xcworkspace -scheme ci_test -configuration Release -sdk iphoneos -archivePath build/ci_test.xcarchive archive
 
-    #   - name: Export the IPA file
-    #     run: |
-    #       xcodebuild -exportArchive -archivePath ios/build/ci_test.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath ios/build
+      - name: Export the IPA file
+        run: |
+          xcodebuild -exportArchive -archivePath ios/build/ci_test.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath ios/build
 
-    #   # Step 3: Export IPA
-    #   - name: Export IPA
-    #     run: |
-    #       xcodebuild -exportArchive \
-    #         -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive \
-    #         -exportPath ${{ github.workspace }}/ios/build/ \
-    #         -exportOptionsPlist ${{ github.workspace }}/ios/ExportOptions.plist
+      # # Step 3: Export IPA
+      # - name: Export IPA
+      #   run: |
+      #     xcodebuild -exportArchive \
+      #       -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive \
+      #       -exportPath ${{ github.workspace }}/ios/build/ \
+      #       -exportOptionsPlist ${{ github.workspace }}/ios/ExportOptions.plist
                   
-    #   - name: Upload IPA to Firebase
-    #     uses: wzieba/Firebase-Distribution-Github-Action@v1
-    #     with:
-    #       appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
-    #       token: ${{ secrets.FIREBASE_AUTH_TOKEN }}
-    #       file: ios/build/ci_test.ipa
-    #       groups: "ios"
+      - name: Upload IPA to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
+          token: ${{ secrets.FIREBASE_AUTH_TOKEN }}
+          file: ios/build/ci_test.ipa
+          groups: "ios"

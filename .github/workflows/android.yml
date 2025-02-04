@@ -55,9 +55,16 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
-      - name: Upload APK
-        id: uploadArtifact
-        uses: actions/upload-artifact@v4
+      # - name: Upload APK
+      #   id: uploadArtifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: app
+      #     path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+      - name: Upload APK to Firebase
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          name: app
-          path: ${{ steps.sign_app.outputs.signedReleaseFile }}
+          appId: ${{ secrets.FIREBASE_APP_ID }}  # Firebase App ID
+          token: ${{ secrets.FIREBASE_AUTH_TOKEN }}  # Firebase Auth Token
+          file: android/app/build/outputs/apk/release/app-release.apk
+          groups: "Testers"  # Firebase groups you want to share with

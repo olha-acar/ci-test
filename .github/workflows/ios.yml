@@ -22,28 +22,23 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
 
-      - name: Install CocoaPods dependencies
-        run: |
-          cd ios
-          pod install --repo-update
-
 # Step 1: Build iOS app
-      - name: Build iOS app
+      - name: install Cocoapod dependencies
         run: |
-          cd ios && pod install
-          xcodebuild -workspace ios/ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration Release \
-            -sdk iphoneos
+          cd packages/app-mobile/ios
+          pod install          
 
-# Step 2: Archive iOS app (create .xcarchive file)
-      - name: Archive iOS app
+      - name: build archive
         run: |
-          xcodebuild -workspace ios/ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration Release \
-            -sdk iphoneos \
-            -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive archive
+          cd packages/app-mobile/ios
+          xcodebuild -workspace ci_test.xcworkspace \
+          -scheme "ci_test" \
+          -sdk iphoneos \
+          -configuration Debug \
+          -destination generic/platform=iOS \
+          -archivePath $RUNNER_TEMP/ci_test.xcarchive \
+          archive          
+
 
       # Step 3: Export IPA
       - name: Export IPA

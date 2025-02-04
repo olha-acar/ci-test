@@ -57,7 +57,7 @@ jobs:
 
       - name: Upload APK
         id: uploadArtifact
-        uses: awalsh128/cache-apt-pkgs-action@v1.4.3
+        uses: actions/upload-artifact@v3
         with:
           name: app
           path: ${{ steps.sign_app.outputs.signedReleaseFile }}

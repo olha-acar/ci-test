@@ -50,12 +50,16 @@ jobs:
       - name: Build the iOS app
         run: |
           cd ios
+          echo "${APP_STORE_CONNECT_API_KEY}" | base64 --decode > AuthKey.p8
           xcodebuild -workspace ci_test.xcworkspace \
             -scheme ci_test \
             -configuration Release \
             -sdk iphoneos \
             -archivePath build/ci_test.xcarchive \
             -allowProvisioningUpdates \
+            -authenticationKeyPath AuthKey.p8 \
+            -authenticationKeyID $APP_STORE_CONNECT_API_KEY_ID \
+            -authenticationKeyIssuerID $APP_STORE_CONNECT_API_KEY_ISSUER_ID \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
             PROVISIONING_PROFILE_SPECIFIER="" \

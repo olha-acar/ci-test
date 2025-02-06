@@ -32,13 +32,13 @@ jobs:
           xcode-version: latest-stable
 
 
-      # - name: Install dependencies
-      #   run: yarn install --frozen-lockfile --network-timeout 300000
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
 
-      # - name: Install CocoaPods dependencies
-      #   run: |
-      #     cd ios
-      #     pod install --repo-update
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install --repo-update
 
           
       - name: Build the iOS app

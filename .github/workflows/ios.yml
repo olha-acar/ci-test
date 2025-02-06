@@ -32,13 +32,13 @@ jobs:
           xcode-version: latest-stable
 
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --network-timeout 300000
+      # - name: Install dependencies
+      #   run: yarn install --frozen-lockfile --network-timeout 300000
 
-      - name: Install CocoaPods dependencies
-        run: |
-          cd ios
-          pod install --repo-update
+      # - name: Install CocoaPods dependencies
+      #   run: |
+      #     cd ios
+      #     pod install --repo-update
 
           
       - name: Build the iOS app
@@ -59,9 +59,9 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="" \
             archive
 
-      - name: Export the IPA file
-        run: |
-          xcodebuild -exportArchive -archivePath ios/build/ci_test.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath ios/build
+      # - name: Export the IPA file
+      #   run: |
+      #     xcodebuild -exportArchive -archivePath ios/build/ci_test.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath ios/build
 
       # # Step 3: Export IPA
       # - name: Export IPA
@@ -71,10 +71,10 @@ jobs:
       #       -exportPath ${{ github.workspace }}/ios/build/ \
       #       -exportOptionsPlist ${{ github.workspace }}/ios/ExportOptions.plist
                   
-      - name: Upload IPA to Firebase
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
-        with:
-          appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
-          token: ${{ secrets.FIREBASE_AUTH_TOKEN }}
-          file: ios/build/ci_test.ipa
-          groups: "ios"
+      # - name: Upload IPA to Firebase
+      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
+      #   with:
+      #     appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
+      #     token: ${{ secrets.FIREBASE_AUTH_TOKEN }}
+      #     file: ios/build/ci_test.ipa
+      #     groups: "ios"

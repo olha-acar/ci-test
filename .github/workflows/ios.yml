@@ -16,6 +16,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+
+      - name: Setup Apple Developer Credentials
+        run: |
+          echo "APPLE_DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}" >> $GITHUB_ENV
+
+
       - name: Install the Apple certificate and provisioning profile
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}

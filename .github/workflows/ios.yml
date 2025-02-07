@@ -16,15 +16,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Apple Developer Credentials
-        run: |
-          echo "Setting up Apple Developer credentials..."
-          echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" | base64 --decode > $RUNNER_TEMP/AuthKey.p8
-          echo "APP_STORE_CONNECT_API_KEY_PATH=$RUNNER_TEMP/AuthKey.p8" >> $GITHUB_ENV
-          echo "APP_STORE_CONNECT_API_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" >> $GITHUB_ENV
-          echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.ISSUER_ID }}" >> $GITHUB_ENV
-          echo "APPLE_DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}" >> $GITHUB_ENV
-
       - name: Install the Apple certificate and provisioning profile
         env:
           BUILD_CERTIFICATE_BASE64: ${{ secrets.BUILD_CERTIFICATE_BASE64 }}
@@ -32,25 +23,25 @@ jobs:
           BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.BUILD_PROVISION_PROFILE_BASE64 }}
           KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
         run: |
-            CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-            PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
-            KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-        
-            echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-            echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
-        
-            security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-            security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-            security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-        
-            security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-            security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-            security list-keychain -d user -s $KEYCHAIN_PATH
-        
-            mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-            cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
 
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
 
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security set-key-partition-list -S apple-tool:,apple: -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/ci_test.mobileprovision
+
+          
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
@@ -66,36 +57,14 @@ jobs:
           pod install --repo-update
 
           
-      - name: Build the iOS app
-        run: |
-          cd ios
-          echo "${APP_STORE_CONNECT_API_KEY}" | base64 --decode > AuthKey.p8
-            xcodebuild -workspace ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration Release \
-            -sdk iphoneos \
-            -archivePath build/ci_test.xcarchive \
-            -allowProvisioningUpdates \
-            -authenticationKeyPath $APP_STORE_CONNECT_API_KEY_PATH \
-            -authenticationKeyID $APP_STORE_CONNECT_API_KEY_ID \
-            -authenticationKeyIssuerID $APP_STORE_CONNECT_API_KEY_ISSUER_ID \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            archive
-
-      - name: Export the IPA file
-        run: |
-          xcodebuild -exportArchive -archivePath ios/build/ci_test.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath ios/build
-
-      # Step 3: Export IPA
-      # - name: Export IPA
-      #   run: |
-      #     xcodebuild -exportArchive \
-      #       -archivePath ${{ github.workspace }}/ios/build/ci_test.xcarchive \
-      #       -exportPath ${{ github.workspace }}/ios/build/ \
-      #       -exportOptionsPlist ${{ github.workspace }}/ios/ExportOptions.plist
-                  
+     - name: Export the IPA file
+       run: |
+          xcodebuild -exportArchive \
+            -archivePath ios/build/ci_test.xcarchive \
+            -exportOptionsPlist ios/exportOptions.plist \
+            -exportPath ios/build \
+            -allowProvisioningUpdates
+                        
       # - name: Upload IPA to Firebase
       #   uses: wzieba/Firebase-Distribution-Github-Action@v1
       #   with:

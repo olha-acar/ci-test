@@ -57,6 +57,19 @@ jobs:
           pod install --repo-update
 
           
+      - name: Build the iOS archive
+        run: |
+          cd ios
+          xcodebuild -workspace ci_test.xcworkspace \
+            -scheme ci_test \
+            -configuration Release \
+            -sdk iphoneos \
+            -archivePath build/ci_test.xcarchive \
+            -allowProvisioningUpdates \
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+            archive
+
       - name: Export the IPA file
         run: |
           xcodebuild -exportArchive \

@@ -59,7 +59,6 @@ jobs:
             PROVISIONING_PROFILE_SPECIFIER="" \
             archive
 
-    
       - name: Export the IPA file
         run: |
           xcodebuild -exportArchive -archivePath ios/build/ci_test.xcarchive -exportOptionsPlist ios/exportOptions.plist -exportPath ios/build

@@ -56,9 +56,9 @@ jobs:
           xcode-version: latest-stable
       - name: Debug API Key Secrets
         run: |
-        echo "API Key ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}"
-        echo "API Issuer ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}"
-        
+          echo "API Key ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}"
+          echo "API Issuer ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}"
+
       - name: Setup App Store Connect API Key
         run: |
           mkdir -p ~/.appstoreconnect/private_keys

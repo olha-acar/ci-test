@@ -104,8 +104,10 @@ jobs:
             -sdk iphoneos \
             -archivePath build/ci_test.xcarchive \
             -allowProvisioningUpdates \
-            CODE_SIGN_STYLE=Automatic \
+            CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+            PROVISIONING_PROFILE_SPECIFIER="CI_DISTRIBUTION" \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
 
       # - name: Install dependencies

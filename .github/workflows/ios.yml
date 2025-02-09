@@ -22,7 +22,7 @@ jobs:
           echo "APPLE_DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}" >> $GITHUB_ENV
           echo "APP_STORE_CONNECT_API_KEY=${{ secrets.APP_STORE_CONNECT_API_KEY }}" >> $GITHUB_ENV
           echo "APP_STORE_CONNECT_API_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" >> $GITHUB_ENV
-          echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" >> $GITHUB_ENV
+          echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.ISSUER_ID }}" >> $GITHUB_ENV
 
 
       - name: Install the Apple certificate and provisioning profile

@@ -61,28 +61,30 @@ jobs:
         run: |
           cd ios
           pod install --repo-update
-
+        
+      - name: Build the iOS app
+        run: xcodebuild -scheme "Actions Production" clean archive -archivePath "Actions" -configuration "Release Production"
           
-      - name: Build the iOS archive
-        run: |
-          cd ios
-          xcodebuild -workspace ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration Release \
-            -sdk iphoneos \
-            -archivePath build/ci_test.xcarchive \
-            -allowProvisioningUpdates \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
-            archive
+      # - name: Build the iOS archive
+      #   run: |
+      #     cd ios
+      #     xcodebuild -workspace ci_test.xcworkspace \
+      #       -scheme ci_test \
+      #       -configuration Release \
+      #       -sdk iphoneos \
+      #       -archivePath build/ci_test.xcarchive \
+      #       -allowProvisioningUpdates \
+      #       CODE_SIGN_STYLE=Automatic \
+      #       DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+      #       archive
 
-      - name: Export the IPA file
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath ios/build/ci_test.xcarchive \
-            -exportOptionsPlist ios/exportOptions.plist \
-            -exportPath ios/build \
-            -allowProvisioningUpdates
+      # - name: Export the IPA file
+      #   run: |
+      #     xcodebuild -exportArchive \
+      #       -archivePath ios/build/ci_test.xcarchive \
+      #       -exportOptionsPlist ios/exportOptions.plist \
+      #       -exportPath ios/build \
+      #       -allowProvisioningUpdates
                         
       # - name: Upload IPA to Firebase
       #   uses: wzieba/Firebase-Distribution-Github-Action@v1

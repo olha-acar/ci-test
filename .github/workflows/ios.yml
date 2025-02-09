@@ -57,7 +57,7 @@ jobs:
 
 
       - name: Verify Signing Certificate
-      run: security find-identity -p codesigning -v
+        run: security find-identity -p codesigning -v
 
       - name: List Available Provisioning Profiles
         run: ls ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles found"

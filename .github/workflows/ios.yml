@@ -63,7 +63,7 @@ jobs:
           pod install --repo-update
         
       - name: Build the iOS app
-        run: xcodebuild -scheme "Actions Production" clean archive -archivePath "Actions" -configuration "Release Production"
+        run: xcodebuild -scheme "ci_test" clean archive -archivePath "Actions" -configuration "Release Production"
           
       # - name: Build the iOS archive
       #   run: |

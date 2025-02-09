@@ -20,6 +20,10 @@ jobs:
           echo "APP_STORE_CONNECT_API_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" >> $GITHUB_ENV
           echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.ISSUER_ID }}" >> $GITHUB_ENV
 
+      - name: Authenticate with Apple Developer account
+        run: |
+          echo "${{ secrets.APPLE_DEVELOPER_PASSWORD }}" | xcrun altool --store-password-in-keychain-interactive --authenticate -u "${{ secrets.APPLE_ACCOUNT_EMAIL }}" -p stdin
+
       - name: Set up Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:

@@ -20,6 +20,9 @@ jobs:
       - name: Setup Apple Developer Credentials
         run: |
           echo "APPLE_DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}" >> $GITHUB_ENV
+          echo "APP_STORE_CONNECT_API_KEY=${{ secrets.APP_STORE_CONNECT_API_KEY }}" >> $GITHUB_ENV
+          echo "APP_STORE_CONNECT_API_KEY_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" >> $GITHUB_ENV
+          echo "APP_STORE_CONNECT_API_KEY_ISSUER_ID=${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" >> $GITHUB_ENV
 
 
       - name: Install the Apple certificate and provisioning profile
@@ -65,7 +68,6 @@ jobs:
       - name: Build the iOS app
         run: |
           cd ios 
-          echo "${APP_STORE_CONNECT_API_KEY}" | base64 --decode > AuthKey.p8
             xcodebuild -workspace ci_test.xcworkspace \
             -scheme ci_test \
             -configuration "Release" \

@@ -83,16 +83,28 @@ jobs:
         run: |
           xcrun altool --list-providers --apiKey "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" --apiIssuer "${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}" || echo "❌ API Key check failed"
 
-      - name: Dry Run Build to Verify Signing
+      - name: Install CocoaPods dependencies
         run: |
           cd ios
+          pod install --repo-update
+
+      - name: Reset Provisioning Profiles
+        run: |
+          rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/*
+          xcrun xcodebuild -allowProvisioningUpdates
+
+      - name: Build the iOS app
+        run: |
+          cd ios 
           xcodebuild -workspace ci_test.xcworkspace \
             -scheme ci_test \
+            -configuration "Release" \
             -sdk iphoneos \
-            -configuration Release \
-            -destination generic/platform=iOS \
+            -archivePath build/ci_test.xcarchive \
             -allowProvisioningUpdates \
-            clean build
+            CODE_SIGN_STYLE=Automatic \
+            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+            archive
 
       # - name: Install dependencies
       #   run: yarn install --frozen-lockfile --network-timeout 300000

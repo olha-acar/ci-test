@@ -82,7 +82,10 @@ jobs:
       - name: Verify App Store Connect API Key
         run: |
           xcrun altool --list-providers --apiKey "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" --apiIssuer "${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}" || echo "❌ API Key check failed"
-
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
+        
       - name: Install CocoaPods dependencies
         run: |
           cd ios

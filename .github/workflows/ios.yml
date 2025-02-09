@@ -55,22 +55,52 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --network-timeout 300000
 
-      - name: Install CocoaPods dependencies
+      - name: Verify Signing Certificate
+      run: security find-identity -p codesigning -v
+
+      - name: List Available Provisioning Profiles
+        run: ls ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles found"
+
+      - name: Check Provisioning Profile Details
+        run: |
+          PROFILE=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/ | head -n 1)
+          if [[ -z "$PROFILE" ]]; then
+          echo "❌ No provisioning profile found"; exit 1
+          fi
+          security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE | grep -A10 "<key>TeamIdentifier</key>"
+
+      - name: Verify App Store Connect API Key
+        run: |
+          xcrun altool --list-providers --apiKey "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" --apiIssuer "${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}" || echo "❌ API Key check failed"
+
+      - name: Dry Run Build to Verify Signing
         run: |
           cd ios
-          pod install --repo-update
-
-      - name: Build the iOS app
-        run: |
-          cd ios 
-          xcodebuild -workspace ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration "Release" \
+          xcodebuild -workspace YourProject.xcworkspace \
+            -scheme YourScheme \
             -sdk iphoneos \
-            -archivePath build/ci_test.xcarchive \
-            CODE_SIGN_STYLE=Automatic \
-            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
-            archive
+            -configuration Release \
+            -destination generic/platform=iOS \
+            -allowProvisioningUpdates \
+            clean build
+
+      # - name: Install dependencies
+      #   run: yarn install --frozen-lockfile --network-timeout 300000
+
+      # - name: Install CocoaPods dependencies
+      #   run: |
+      #     cd ios
+      #     pod install --repo-update
+
+      # - name: Build the iOS app
+      #   run: |
+      #     cd ios 
+      #     xcodebuild -workspace ci_test.xcworkspace \
+      #       -scheme ci_test \
+      #       -configuration "Release" \
+      #       -sdk iphoneos \
+      #       -archivePath build/ci_test.xcarchive \
+      #       CODE_SIGN_STYLE=Automatic \
+      #       DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+      #       archive

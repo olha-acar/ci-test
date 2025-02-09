@@ -71,7 +71,6 @@ jobs:
             -configuration "Release" \
             -sdk iphoneos \
             -archivePath build/ci_test.xcarchive \
-            -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
             archive

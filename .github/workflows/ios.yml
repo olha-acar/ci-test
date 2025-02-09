@@ -63,7 +63,7 @@ jobs:
           pod install --repo-update
         
       - name: Build the iOS app
-        run: xcodebuild -project "ios/ci_test.xcworkspace" \
+        run: xcodebuild -workspace "ios/ci_test.xcworkspace" \
           -scheme "ci_test" \
           -configuration "Release" \
           -archivePath "Actions" \

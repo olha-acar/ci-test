@@ -65,13 +65,14 @@ jobs:
       - name: Build the iOS app
         run: |
           cd ios 
-          xcodebuild -workspace ci_test.xcworkspace \
-          -scheme ci_test \
-          -configuration "Release" \
-          -sdk iphoneos \
-          -archivePath build/ci_test.xcarchive \
-          -allowProvisioningUpdates \
-          archive
+          echo "${APP_STORE_CONNECT_API_KEY}" | base64 --decode > AuthKey.p8
+            xcodebuild -workspace ci_test.xcworkspace \
+            -scheme ci_test \
+            -configuration "Release" \
+            -sdk iphoneos \
+            -archivePath build/ci_test.xcarchive \
+            -allowProvisioningUpdates \
+            archive
 
         # - name: Build the iOS archive
       #   run: |

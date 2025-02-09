@@ -54,6 +54,7 @@ jobs:
         uses: maxim-lobanov/setup-xcode@v1
         with:
           xcode-version: latest-stable
+
       - name: Debug API Key Secrets
         run: |
           echo "API Key ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}"
@@ -85,8 +86,8 @@ jobs:
       - name: Dry Run Build to Verify Signing
         run: |
           cd ios
-          xcodebuild -workspace YourProject.xcworkspace \
-            -scheme YourScheme \
+          xcodebuild -workspace ci_test.xcworkspace \
+            -scheme ci_test \
             -sdk iphoneos \
             -configuration Release \
             -destination generic/platform=iOS \

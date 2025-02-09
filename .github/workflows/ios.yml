@@ -16,7 +16,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       
-        - name: Debug Working Directory
+      - name: Debug Working Directory
         run: |
           pwd
           ls -la

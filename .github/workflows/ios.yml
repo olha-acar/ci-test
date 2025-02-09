@@ -85,7 +85,7 @@ jobs:
       
       - name: Install dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
-        
+
       - name: Install CocoaPods dependencies
         run: |
           cd ios
@@ -94,6 +94,7 @@ jobs:
       - name: Reset Provisioning Profiles
         run: |
           rm -rf ~/Library/MobileDevice/Provisioning\ Profiles/*
+          cd ios
           xcrun xcodebuild -allowProvisioningUpdates
 
       - name: Build the iOS app

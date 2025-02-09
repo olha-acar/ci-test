@@ -106,6 +106,8 @@ jobs:
             -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+            APPLE_ID=$APPLE_ID \
+            APPLE_PASSWORD=$APPLE_PASSWORD \
             archive
 
       # - name: Install dependencies

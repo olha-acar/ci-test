@@ -91,20 +91,15 @@ jobs:
           cd ios
           pod install --repo-update
 
-      - name: Ensure Working Directory
-        run: cd ios
-
-      - name: Run Provisioning Updates
-        run: xcodebuild -allowProvisioningUpdates
-
       - name: Build the iOS app
         run: |
           cd ios 
-          xcodebuild -workspace ci_test.xcworkspace \
+          xcodebuild -workspace ios/ci_test.xcworkspace \
             -scheme ci_test \
             -configuration "Release" \
             -sdk iphoneos \
             -archivePath build/ci_test.xcarchive \
+            -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
             archive

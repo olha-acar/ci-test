@@ -55,6 +55,11 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Setup Apple Developer Credentials
+        run: |
+          echo "APPLE_ID=${{ secrets.APPLE_ACCOUNT_EMAIL }}" >> $GITHUB_ENV
+          echo "APPLE_PASSWORD=${{ secrets.APPLE_DEVELOPER_PASSWORD }}" >> $GITHUB_ENV
+
       - name: Debug API Key Secrets
         run: |
           echo "API Key ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}"
@@ -93,7 +98,6 @@ jobs:
 
       - name: Build the iOS app
         run: |
-          cd ios 
           xcodebuild -workspace ios/ci_test.xcworkspace \
             -scheme ci_test \
             -configuration "Release" \

@@ -110,6 +110,27 @@ jobs:
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
 
+
+      - name: Export the IPA file
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath build/ci_test.xcarchive \
+            -exportPath build/export \
+            -exportOptionsPlist ios/exportOptions.plist \
+            -allowProvisioningUpdates
+    
+      - name: Upload IPA to TestFlight
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+        run: |
+          xcrun altool --upload-app \
+            -f build/export/ci_test.ipa \
+            -t ios \
+            --apiKey $APP_STORE_CONNECT_API_KEY_ID \
+            --apiIssuer $APP_STORE_CONNECT_API_ISSUER_ID  
+
       # - name: Install dependencies
       #   run: yarn install --frozen-lockfile --network-timeout 300000
 

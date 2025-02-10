@@ -14,5 +14,10 @@
 	<string>5K5U64U7T6</string>
 	<key>thinning</key>
 	<string>&lt;none&gt;</string>
+	<key>provisioningProfiles</key>
+	<dict>
+  	<key>org.ci-test</key>
+  	<string>CI_DISTRUBUTION</string>
+	</dict>
 </dict>
 </plist>

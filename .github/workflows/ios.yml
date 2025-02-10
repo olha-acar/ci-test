@@ -50,10 +50,10 @@ jobs:
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
 
-      - name: Set up Xcode
+      - name: Set up Xcode 15.4
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: latest-stable
+          xcode-version: 15.4
 
       - name: Show available Xcode versions
         run: ls /Applications | grep Xcode
@@ -66,49 +66,49 @@ jobs:
       - name: Verify Signing Certificate
         run: security find-identity -p codesigning -v
       
-      # - name: Install dependencies
-      #   run: yarn install --frozen-lockfile --network-timeout 300000
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
 
-      # - name: Install CocoaPods dependencies
-      #   run: |
-      #     cd ios
-      #     pod install --repo-update
+      - name: Install CocoaPods dependencies
+        run: |
+          cd ios
+          pod install --repo-update
 
-      # - name: Build the iOS app
-      #   run: |
-      #     xcodebuild -workspace ios/ci_test.xcworkspace \
-      #       -scheme ci_test \
-      #       -configuration "Release" \
-      #       -sdk iphoneos \
-      #       -archivePath build/ci_test.xcarchive \
-      #       -allowProvisioningUpdates \
-      #       CODE_SIGN_STYLE=Manual \
-      #       DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
-      #       PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
-      #       CODE_SIGN_IDENTITY="iPhone Distribution" \
-      #       archive
+      - name: Build the iOS app
+        run: |
+          xcodebuild -workspace ios/ci_test.xcworkspace \
+            -scheme ci_test \
+            -configuration "Release" \
+            -sdk iphoneos \
+            -archivePath build/ci_test.xcarchive \
+            -allowProvisioningUpdates \
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+            PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            archive
 
 
-      # - name: Export the IPA file
-      #   run: |
-      #     xcodebuild -exportArchive \
-      #       -archivePath build/ci_test.xcarchive \
-      #       -exportPath build/export \
-      #       -exportOptionsPlist ios/ExportOptions.plist \
-      #       -allowProvisioningUpdates
+      - name: Export the IPA file
+        run: |
+          xcodebuild -exportArchive \
+            -archivePath build/ci_test.xcarchive \
+            -exportPath build/export \
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -allowProvisioningUpdates
 
     
-      # - name: Upload IPA to TestFlight
-      #   env:
-      #     APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
-      #     APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-      #     APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
-      #   run: |
-      #     xcrun altool --upload-app \
-      #       -f build/export/ci_test.ipa \
-      #       -t ios \
-      #       --apiKey $APP_STORE_CONNECT_API_KEY_ID \
-      #       --apiIssuer $APP_STORE_CONNECT_API_ISSUER_ID  
+      - name: Upload IPA to TestFlight
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+        run: |
+          xcrun altool --upload-app \
+            -f build/export/ci_test.ipa \
+            -t ios \
+            --apiKey $APP_STORE_CONNECT_API_KEY_ID \
+            --apiIssuer $APP_STORE_CONNECT_API_ISSUER_ID  
 
       # - name: Install dependencies
       #   run: yarn install --frozen-lockfile --network-timeout 300000

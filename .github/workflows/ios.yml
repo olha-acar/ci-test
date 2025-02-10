@@ -116,7 +116,7 @@ jobs:
           xcodebuild -exportArchive \
             -archivePath build/ci_test.xcarchive \
             -exportPath build/export \
-            -exportOptionsPlist ios/exportOptions.plist \
+            -exportOptionsPlist ios/ExportOptions.plist \
             -allowProvisioningUpdates
     
       - name: Upload IPA to TestFlight

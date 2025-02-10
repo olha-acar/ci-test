@@ -55,10 +55,8 @@ jobs:
         with:
           xcode-version: latest-stable
 
-      - name: Debug API Key Secrets
-        run: |
-          echo "API Key ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}"
-          echo "API Issuer ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ISSUER_ID }}"
+      - name: Show available Xcode versions
+        run: ls /Applications | grep Xcode
 
       - name: Setup App Store Connect API Key
         run: |
@@ -67,65 +65,50 @@ jobs:
 
       - name: Verify Signing Certificate
         run: security find-identity -p codesigning -v
-
-      - name: List Available Provisioning Profiles
-        run: ls ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles found"
-
-      - name: Check Provisioning Profile Details
-        run: |
-          PROFILE=$(ls ~/Library/MobileDevice/Provisioning\ Profiles/ | head -n 1)
-          if [[ -z "$PROFILE" ]]; then
-          echo "❌ No provisioning profile found"; exit 1
-          fi
-          security cms -D -i ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE | grep -A10 "<key>TeamIdentifier</key>"
-
-      - name: Verify App Store Connect API Key
-        run: |
-          xcrun altool --list-providers --apiKey "${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}" --apiIssuer "${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}" || echo "❌ API Key check failed"
       
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile --network-timeout 300000
+      # - name: Install dependencies
+      #   run: yarn install --frozen-lockfile --network-timeout 300000
 
-      - name: Install CocoaPods dependencies
-        run: |
-          cd ios
-          pod install --repo-update
+      # - name: Install CocoaPods dependencies
+      #   run: |
+      #     cd ios
+      #     pod install --repo-update
 
-      - name: Build the iOS app
-        run: |
-          xcodebuild -workspace ios/ci_test.xcworkspace \
-            -scheme ci_test \
-            -configuration "Release" \
-            -sdk iphoneos \
-            -archivePath build/ci_test.xcarchive \
-            -allowProvisioningUpdates \
-            CODE_SIGN_STYLE=Manual \
-            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
-            PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
-            CODE_SIGN_IDENTITY="iPhone Distribution" \
-            archive
+      # - name: Build the iOS app
+      #   run: |
+      #     xcodebuild -workspace ios/ci_test.xcworkspace \
+      #       -scheme ci_test \
+      #       -configuration "Release" \
+      #       -sdk iphoneos \
+      #       -archivePath build/ci_test.xcarchive \
+      #       -allowProvisioningUpdates \
+      #       CODE_SIGN_STYLE=Manual \
+      #       DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+      #       PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
+      #       CODE_SIGN_IDENTITY="iPhone Distribution" \
+      #       archive
 
 
-      - name: Export the IPA file
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath build/ci_test.xcarchive \
-            -exportPath build/export \
-            -exportOptionsPlist ios/ExportOptions.plist \
-            -allowProvisioningUpdates
+      # - name: Export the IPA file
+      #   run: |
+      #     xcodebuild -exportArchive \
+      #       -archivePath build/ci_test.xcarchive \
+      #       -exportPath build/export \
+      #       -exportOptionsPlist ios/ExportOptions.plist \
+      #       -allowProvisioningUpdates
 
     
-      - name: Upload IPA to TestFlight
-        env:
-          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
-          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
-        run: |
-          xcrun altool --upload-app \
-            -f build/export/ci_test.ipa \
-            -t ios \
-            --apiKey $APP_STORE_CONNECT_API_KEY_ID \
-            --apiIssuer $APP_STORE_CONNECT_API_ISSUER_ID  
+      # - name: Upload IPA to TestFlight
+      #   env:
+      #     APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+      #     APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+      #     APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+      #   run: |
+      #     xcrun altool --upload-app \
+      #       -f build/export/ci_test.ipa \
+      #       -t ios \
+      #       --apiKey $APP_STORE_CONNECT_API_KEY_ID \
+      #       --apiIssuer $APP_STORE_CONNECT_API_ISSUER_ID  
 
       # - name: Install dependencies
       #   run: yarn install --frozen-lockfile --network-timeout 300000

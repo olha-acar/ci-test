@@ -89,7 +89,7 @@ jobs:
             archive
 
       - name: Upload IPA as Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ci_test-ipa
           path: build/export/ci_test.ipa

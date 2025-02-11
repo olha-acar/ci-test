@@ -143,38 +143,38 @@ jobs:
       #     cd ios
       #     pod install --repo-update
       
-      #       # 📦 Cache iOS Build
-      # - name: Cache iOS Build
-      #   uses: actions/cache@v4
-      #   with:
-      #     path: build/
-      #     key: ios-build-${{ github.run_id }}
-      #     restore-keys: |
-      #       ios-build-
+            # 📦 Cache iOS Build
+      - name: Cache iOS Build
+        uses: actions/cache@v4
+        with:
+          path: build/
+          key: ios-build-${{ github.run_id }}
+          restore-keys: |
+            ios-build-
 
-      # - name: Build the iOS app
-      #   run: |
-      #     xcodebuild -workspace ios/ci_test.xcworkspace \
-      #       -scheme ci_test \
-      #       -configuration "Release" \
-      #       -sdk iphoneos \
-      #       -archivePath build/ci_test.xcarchive \
-      #       -allowProvisioningUpdates \
-      #       -exportPath build/export
-      #       CODE_SIGN_STYLE=Manual \
-      #       DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
-      #       PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
-      #       CODE_SIGN_IDENTITY="iPhone Distribution" \
-      #       archive
+      - name: Build the iOS app
+        run: |
+          xcodebuild -workspace ios/ci_test.xcworkspace \
+            -scheme ci_test \
+            -configuration "Release" \
+            -sdk iphoneos \
+            -archivePath build/ci_test.xcarchive \
+            -allowProvisioningUpdates \
+            -exportPath build/export
+            CODE_SIGN_STYLE=Manual \
+            DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
+            PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            archive
 
-      # - name: Debug - List build directory
-      #   run: ls -R build
+      - name: Debug - List build directory
+        run: ls -R build
 
-      # - name: Upload IPA as Artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: ci_test-ipa
-      #     path: build/export/ci_test.ipa
+      - name: Upload IPA as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ci_test-ipa
+          path: build/export/ci_test.ipa
 
       # - name: Decode ExportOptions.plist from secrets
       #   run: |

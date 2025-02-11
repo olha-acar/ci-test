@@ -167,7 +167,7 @@ jobs:
             -allowProvisioningUpdates \
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
-            PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
+            PROVISIONING_PROFILE_SPECIFIER="CI_DISTRIBUTION" \
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
 

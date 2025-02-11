@@ -10,7 +10,7 @@
     <key>provisioningProfiles</key>
     <dict>
       <key>org.ci-test</key>
-      <string>CI_DISTRUBUTION</string>
+      <string>CI_DISTRIBUTION</string>
     </dict>
   </dict>
 </plist>

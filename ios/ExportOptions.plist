@@ -9,7 +9,7 @@
     <string>manual</string>
     <key>provisioningProfiles</key>
     <dict>
-      <key>com.afacar.devs</key>
+      <key>org.ci-test</key>
       <string>CI_DISTRUBUTION</string>
     </dict>
   </dict>

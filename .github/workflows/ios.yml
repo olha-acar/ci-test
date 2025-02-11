@@ -88,6 +88,12 @@ jobs:
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
 
+      - name: Upload IPA as Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ci_test-ipa
+          path: build/export/ci_test.ipa
+
       - name: Decode ExportOptions.plist from secrets
         run: |
           echo "${{ secrets.EXPORT_OPTIONS_PLIST }}" | base64 --decode -o $RUNNER_TEMP/ExportOptions.plist
@@ -96,8 +102,8 @@ jobs:
         run: |
           xcodebuild -exportArchive \
             -archivePath build/ci_test.xcarchive \
-            -exportOptionsPlist $RUNNER_TEMP/ExportOptions.plist \
             -exportPath build/export \
+            -exportOptionsPlist ios/ExportOptions.plist \
             -allowProvisioningUpdates
 
       # - name: export ipa

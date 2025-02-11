@@ -25,7 +25,10 @@ jobs:
         with:
           path: ./node_modules
           key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
-            # key: ${{ runner.os }}-modules-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-modules-
+            ${{ runner.os }}-
+          
 
       - name: Install node_modules if necessary
         if: steps.modules-cache.outputs.cache-hit != 'true'

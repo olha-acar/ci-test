@@ -13,6 +13,12 @@ jobs:
       - name: Check out Git repository
         uses: actions/checkout@v3
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: 'yarn'  # Caches node_modules for faster builds
+
       - name: Setup Apple Developer Credentials
         run: |
           echo "APPLE_DEVELOPMENT_TEAM=${{ secrets.APPLE_TEAM_ID }}" >> $GITHUB_ENV

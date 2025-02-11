@@ -55,25 +55,59 @@ jobs:
         with:
           xcode-version: 15.4
 
-      - name: Show available Xcode versions
-        run: ls /Applications | grep Xcode
+      # - name: Show available Xcode versions
+      #   run: ls /Applications | grep Xcode
 
-      - name: Setup App Store Connect API Key
-        run: |
-          mkdir -p ~/.appstoreconnect/private_keys
-          echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
+      # - name: Setup App Store Connect API Key
+      #   run: |
+      #     mkdir -p ~/.appstoreconnect/private_keys
+      #     echo "${{ secrets.APP_STORE_CONNECT_API_KEY }}" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}.p8
 
-      - name: Verify Signing Certificate
-        run: security find-identity -p codesigning -v
+      # - name: Verify Signing Certificate
+      #   run: security find-identity -p codesigning -v
       
-      - name: Install dependencies
+      # - name: Install dependencies
+      #   run: yarn install --frozen-lockfile --network-timeout 300000
+
+      # - name: Install CocoaPods dependencies
+      #   run: |
+      #     cd ios
+      #     pod install --repo-update
+
+      # - name: Cache iOS Build
+      #   uses: actions/cache@v4
+      #   with:
+      #     path: build/
+      #     key: ios-build-${{ github.run_id }}
+      #     restore-keys: |
+      #       ios-build-
+            # 📦 Cache Yarn Dependencies
+      - name: Cache Yarn Dependencies
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: yarn-deps-${{ runner.os }}-${{ hashFiles('yarn.lock') }}
+          restore-keys: |
+            yarn-deps-${{ runner.os }}-
+
+      - name: Install Dependencies
         run: yarn install --frozen-lockfile --network-timeout 300000
 
-      - name: Install CocoaPods dependencies
+      # 📦 Cache CocoaPods
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: ios/Pods
+          key: pods-${{ runner.os }}-${{ hashFiles('ios/Podfile.lock') }}
+          restore-keys: |
+            pods-${{ runner.os }}-
+
+      - name: Install CocoaPods Dependencies
         run: |
           cd ios
           pod install --repo-update
-
+      
+            # 📦 Cache iOS Build
       - name: Cache iOS Build
         uses: actions/cache@v4
         with:

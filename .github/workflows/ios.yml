@@ -172,6 +172,11 @@ jobs:
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
 
+          xcodebuild -exportArchive \
+            -archivePath build/ci_test.xcarchive \
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -exportPath build/export
+
       - name: Debug - List build directory
         run: ls -R build
 

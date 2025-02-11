@@ -74,6 +74,14 @@ jobs:
           cd ios
           pod install --repo-update
 
+      - name: Cache iOS Build
+        uses: actions/cache@v4
+        with:
+          path: build/
+          key: ios-build-${{ github.run_id }}
+          restore-keys: |
+            ios-build-
+
       - name: Build the iOS app
         run: |
           xcodebuild -workspace ios/ci_test.xcworkspace \
@@ -92,7 +100,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ci_test-ipa
-          path: build/export/ci_test.ipa
+          path: build/ci_test.ipa
 
       - name: Decode ExportOptions.plist from secrets
         run: |

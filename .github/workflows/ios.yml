@@ -167,6 +167,12 @@ jobs:
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
 
+          xcodebuild -exportArchive \
+            -archivePath build/ci_test.xcarchive \
+            -exportPath build/export \
+            -exportOptionsPlist ios/ExportOptions.plist \
+            -allowProvisioningUpdates
+
       - name: Debug - List build directory
         run: ls -R build
 
@@ -180,13 +186,13 @@ jobs:
         run: |
           echo "${{ secrets.EXPORT_OPTIONS_PLIST }}" | base64 --decode -o $RUNNER_TEMP/ExportOptions.plist
 
-      - name: Export the IPA file
-        run: |
-          xcodebuild -exportArchive \
-            -archivePath build/ci_test.xcarchive \
-            -exportPath build/export \
-            -exportOptionsPlist ios/ExportOptions.plist \
-            -allowProvisioningUpdates
+      # - name: Export the IPA file
+      #   run: |
+      #     xcodebuild -exportArchive \
+      #       -archivePath build/ci_test.xcarchive \
+      #       -exportPath build/export \
+      #       -exportOptionsPlist ios/ExportOptions.plist \
+      #       -allowProvisioningUpdates
 
       # - name: export ipa
       #   env:

@@ -40,14 +40,20 @@ jobs:
         uses: actions/cache@v3
         id: pods-cache
         with:
-          path: ./ios/Pods
+          path: |
+            ./ios/Pods
+            ~/.cocoapods
           key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
-        
+
       - name: Install CocoaPods dependencies
         run: |
           cd ios
-          pod install --repo-update
-
+          # Check if the cache hit
+          if [ ! -d "Pods" ]; then
+            pod install --repo-update
+          else
+            echo "Using cached Pods directory."
+          fi
 
       - name: Setup Apple Developer Credentials
         run: |
@@ -160,18 +166,11 @@ jobs:
             -sdk iphoneos \
             -archivePath build/ci_test.xcarchive \
             -allowProvisioningUpdates \
-            -exportPath build/export
             CODE_SIGN_STYLE=Manual \
             DEVELOPMENT_TEAM=$APPLE_DEVELOPMENT_TEAM \
             PROVISIONING_PROFILE_SPECIFIER="CI_DISTRUBUTION" \
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             archive
-
-          xcodebuild -exportArchive \
-            -archivePath build/ci_test.xcarchive \
-            -exportPath build/export \
-            -exportOptionsPlist ios/ExportOptions.plist \
-            -allowProvisioningUpdates
 
       - name: Debug - List build directory
         run: ls -R build

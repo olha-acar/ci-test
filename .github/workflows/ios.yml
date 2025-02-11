@@ -18,42 +18,50 @@ jobs:
         with:
           node-version: '20'
           cache: 'yarn'
-
-      # - name: Cache node_modules
-      #   id: modules-cache
-      #   uses: actions/cache@v3
-      #   with:
-      #     path: ./node_modules
-      #     key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
-      #     restore-keys: |
-      #       ${{ runner.os }}-modules-
-      #       ${{ runner.os }}-
-          
-
-      - name: Install node_modules if necessary
-        if: steps.modules-cache.outputs.cache-hit != 'true'
-        shell: bash
-        run: yarn install --frozen-lockfile
-
-      - name: Cache Pods
-        if: runner.os == 'macOS'
-        uses: actions/cache@v3
-        id: pods-cache
-        with:
-          path: |
-            ./ios/Pods
-            ~/.cocoapods
-          key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+      
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile --network-timeout 300000
 
       - name: Install CocoaPods dependencies
         run: |
           cd ios
-          # Check if the cache hit
-          if [ ! -d "Pods" ]; then
-            pod install --repo-update
-          else
-            echo "Using cached Pods directory."
-          fi
+          pod install --repo-update
+
+      # # - name: Cache node_modules
+      # #   id: modules-cache
+      # #   uses: actions/cache@v3
+      # #   with:
+      # #     path: ./node_modules
+      # #     key: ${{ runner.os }}-modules-${{ hashFiles('yarn.lock') }}
+      # #     restore-keys: |
+      # #       ${{ runner.os }}-modules-
+      # #       ${{ runner.os }}-
+          
+
+      # - name: Install node_modules if necessary
+      #   if: steps.modules-cache.outputs.cache-hit != 'true'
+      #   shell: bash
+      #   run: yarn install --frozen-lockfile
+
+      # - name: Cache Pods
+      #   if: runner.os == 'macOS'
+      #   uses: actions/cache@v3
+      #   id: pods-cache
+      #   with:
+      #     path: |
+      #       ./ios/Pods
+      #       ~/.cocoapods
+      #     key: ${{ runner.os }}-pods-${{ hashFiles('ios/Podfile.lock') }}
+
+      # - name: Install CocoaPods dependencies
+      #   run: |
+      #     cd ios
+      #     # Check if the cache hit
+      #     if [ ! -d "Pods" ]; then
+      #       pod install --repo-update
+      #     else
+      #       echo "Using cached Pods directory."
+      #     fi
 
       - name: Setup Apple Developer Credentials
         run: |
@@ -148,19 +156,6 @@ jobs:
       #   run: |
       #     cd ios
       #     pod install --repo-update
-      - name: Clean iOS build
-        run: |
-          cd ios
-          xcodebuild clean
-      
-            # 📦 Cache iOS Build
-      - name: Cache iOS Build
-        uses: actions/cache@v4
-        with:
-          path: build/
-          key: ios-build-${{ github.run_id }}
-          restore-keys: |
-            ios-build-
 
       - name: Build the iOS app
         run: |

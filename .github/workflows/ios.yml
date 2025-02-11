@@ -180,8 +180,8 @@ jobs:
             -allowProvisioningUpdates
 
 
-      - name: Debug - List build directory
-        run: ls -R build
+      # - name: Debug - List build directory
+      #   run: ls -R build
 
       - name: Upload IPA as Artifact
         uses: actions/upload-artifact@v4
@@ -189,9 +189,21 @@ jobs:
           name: ci_test-ipa
           path: build/export/ci_test.ipa
 
-      - name: Decode ExportOptions.plist from secrets
+      - name: Upload IPA to TestFlight
+        env:
+          APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
         run: |
-          echo "${{ secrets.EXPORT_OPTIONS_PLIST }}" | base64 --decode -o $RUNNER_TEMP/ExportOptions.plist
+          xcrun altool --upload-app \
+            -f build/export/ci_test.ipa \
+            -t ios \
+            --apiKey $APP_STORE_CONNECT_API_KEY_ID \
+            --apiIssuer $APP_STORE_CONNECT_API_ISSUER_ID  
+
+      # - name: Decode ExportOptions.plist from secrets
+      #   run: |
+      #     echo "${{ secrets.EXPORT_OPTIONS_PLIST }}" | base64 --decode -o $RUNNER_TEMP/ExportOptions.plist
 
 
       # - name: export ipa
